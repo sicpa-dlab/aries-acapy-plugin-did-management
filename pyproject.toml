@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "aries-acapy-didweb"
+version = "0.1.0"
+description = ""
+authors = ["Clément Humbert <clement.humbert@sicpa.com>"]
+readme = "README.md"
+packages = [{include = "didweb"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+#aries-cloudagent = "^1.0.0-rc1"
+aries-cloudagent = { git = "https://github.com/sicpa-dlab/aries-cloudagent-python", rev = "aae6d83d14c6eb0449b64c1b218947e738fd2f44"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
