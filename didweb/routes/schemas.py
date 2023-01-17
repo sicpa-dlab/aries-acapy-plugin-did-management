@@ -2,7 +2,7 @@ import re
 
 from aries_cloudagent.messaging.models.openapi import OpenAPISchema
 from aries_cloudagent.messaging.valid import GENERIC_DID
-from marshmallow import fields
+from marshmallow import fields, INCLUDE, Schema
 from marshmallow.validate import Regexp
 
 
@@ -45,3 +45,8 @@ class DIDQueryStringSchema(OpenAPISchema):
     """Parameters and validators for set public DID request query string."""
 
     did = fields.Str(description="DID of interest", required=True, **GENERIC_DID)
+
+
+class DIDDocSchema(Schema):
+    class Meta:
+        unknown = INCLUDE

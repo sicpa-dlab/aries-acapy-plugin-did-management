@@ -1,5 +1,5 @@
 from aiohttp import web
-from aiohttp_apispec import querystring_schema
+from aiohttp_apispec import querystring_schema, response_schema
 from aiohttp_apispec.decorators import docs
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.storage.base import BaseStorage
@@ -7,12 +7,13 @@ from aries_cloudagent.wallet.base import BaseWallet
 
 from ..didweb_manager import DIDWebManager
 from .openapi_config import OPENAPI_TAG
-from .schemas import GetDIDDocSchema
+from .schemas import GetDIDDocSchema, DIDDocSchema
 from ..retention import RecallStrategyConfig
 
 
 @docs(tags=[OPENAPI_TAG], summary="Gets DIDDoc for specified did:web")
 @querystring_schema(GetDIDDocSchema())
+@response_schema(DIDDocSchema())
 async def fetch_diddoc(request: web.Request):
     did = request.query.get("did")
     if not did:
