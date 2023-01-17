@@ -30,4 +30,4 @@ def post_process_routes(app: web.Application):
     )
 
 
-__all__ = ['register', 'post_process_routes']
+__all__ = ["register", "post_process_routes"]

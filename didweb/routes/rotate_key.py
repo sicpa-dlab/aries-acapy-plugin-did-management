@@ -11,9 +11,7 @@ from .openapi_config import OPENAPI_TAG
 from .schemas import DIDWebSchema
 
 
-@docs(
-    tags=[OPENAPI_TAG], summary="Rotate keys for specified did:web, return new DIDDoc"
-)
+@docs(tags=[OPENAPI_TAG], summary="Rotate keys for specified did:web, return new DIDDoc")
 @querystring_schema(DIDWebSchema())
 async def rotate_key(request: web.Request):
     did = request.query.get("did")
@@ -24,11 +22,10 @@ async def rotate_key(request: web.Request):
 
     async with context.profile.transaction() as transaction:
         manager = DIDWebManager(
-            transaction.inject(BaseWallet),
-            transaction.inject(BaseStorage)
+            transaction.inject(BaseWallet), transaction.inject(BaseStorage)
         )
 
         new_diddoc = await manager.rotate_key(did)
-        transaction.commit()
+        await transaction.commit()
 
     return web.Response(text=new_diddoc.to_json())

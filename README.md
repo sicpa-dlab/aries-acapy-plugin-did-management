@@ -1,5 +1,29 @@
 # ACA-Python DID Web plugin
 
+## Developing
+
+First-time initialization of the python environment:
+
+```bash
+poetry install
+pre-commit install
+```
+
+You're all set !
+
+To run aca-py with the plugin, include it in your config:
+
+```yaml
+plugin:
+  - didweb
+```
+
+and run aca-py from the poetry environment:
+```bash
+poetry env
+aca-py ....
+```
+
 ## Creating a did:web
 
 ```bash
