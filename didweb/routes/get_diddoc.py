@@ -28,6 +28,7 @@ async def fetch_diddoc(request: web.Request):
         )
 
         manager = DIDWebManager(
+            context.profile,
             session.inject(BaseWallet),
             session.inject(BaseStorage),
             retention_strategy_config,

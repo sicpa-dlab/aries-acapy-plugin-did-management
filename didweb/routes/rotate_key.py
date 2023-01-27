@@ -23,7 +23,9 @@ async def rotate_key(request: web.Request):
 
     async with context.profile.transaction() as transaction:
         manager = DIDWebManager(
-            transaction.inject(BaseWallet), transaction.inject(BaseStorage)
+            context.profile,
+            transaction.inject(BaseWallet),
+            transaction.inject(BaseStorage),
         )
 
         new_diddoc = await manager.rotate_key(did)
