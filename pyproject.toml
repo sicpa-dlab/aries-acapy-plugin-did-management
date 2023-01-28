@@ -9,7 +9,7 @@ packages = [{include = "didweb"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 #aries-cloudagent = "^1.0.0-rc1"
-aries-cloudagent = { git = "https://github.com/sicpa-dlab/aries-cloudagent-python", rev = "ea31bd78d17b0bc76cda11b85145c50f4258daa4"}
+aries-cloudagent = { git = "https://github.com/sicpa-dlab/aries-cloudagent-python", rev = "e4ab945258f8152f50776c89e06e52375c9102b7"}
 
 
 [tool.poetry.group.dev.dependencies]
