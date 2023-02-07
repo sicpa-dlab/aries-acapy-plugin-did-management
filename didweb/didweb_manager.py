@@ -1,6 +1,6 @@
 import base64
 from dataclasses import dataclass
-from typing import Iterable, Tuple, List, cast
+from typing import Iterable, Tuple, List, cast, Callable
 
 import base58
 from aries_cloudagent.core.profile import Profile
@@ -14,9 +14,10 @@ from aries_cloudagent.wallet.did_info import DIDInfo
 from aries_cloudagent.wallet.key_type import ED25519
 
 from pydid import DIDDocumentBuilder, DIDUrl
-from pydid.verification_method import JsonWebKey2020, VerificationMethod
+from pydid.verification_method import VerificationMethod
 
 from didweb.retention import AskarStorageStrategy, NumberOfKeysStrategy
+from didweb.verification_methods import Did, ed25519_verification_key_2018
 
 
 class UnknownDIDException(Exception):
@@ -48,12 +49,26 @@ class DIDWebManager:
             else NumberOfKeysStrategy(self.__storage_strategy, 0)
         )
 
-    async def get_diddoc(self, did: str):
+        self.__verification_method_factory = ed25519_verification_key_2018
+
+    async def get_diddoc(
+        self,
+        did: str,
+        verification_method_factory: Callable[
+            [Did, int, bytes], VerificationMethod
+        ] = None,
+    ):
         """
         Generate a DIDDocument for a given DID
         :param did:
+        :param verification_method_factory:
         :return: a w3c compliant DID Document
         """
+        verification_method_factory = (
+            self.__verification_method_factory
+            if verification_method_factory is None
+            else verification_method_factory
+        )
 
         # fetch did with current key
         did_info, signing_key_b64 = await self._get_did_and_signing_key(did)
@@ -72,7 +87,10 @@ class DIDWebManager:
         # Build diddoc
         did_doc_builder = DIDDocumentBuilder(did, controller=[did])
 
-        verification_methods = _build_verification_methods(did, keys_with_indices)
+        verification_methods = [
+            verification_method_factory(did, key_index, key)
+            for key_index, key in keys_with_indices
+        ]
         did_doc_builder.verification_method.methods.extend(verification_methods)
 
         # reference the keys in the other sections
@@ -105,7 +123,7 @@ class DIDWebManager:
         return await self.get_diddoc(did)
 
     async def _get_did_and_signing_key(self, did) -> Tuple[DIDInfo, bytes]:
-        did_info = await self.__wallet.get_local_did(did)
+        did_info = await self.__wallet.get_local_did(did.replace("did:sov:", ""))
         signing_key_b64 = base64.b64encode(base58.b58decode(did_info.verkey))
 
         return did_info, signing_key_b64
@@ -118,25 +136,6 @@ class DIDWebManager:
             None,
         )
         return routing_keys, my_endpoint
-
-
-def _build_verification_methods(
-    did: str, keys_with_indices: Iterable[Tuple[int, bytes]]
-) -> List[VerificationMethod]:
-    return [
-        JsonWebKey2020(
-            id=f"{did}#key-{index}",
-            type="JsonWebKey2020",
-            controller=did,
-            public_key_jwk={
-                "kty": "OKP",
-                # TODO: remove hard-coding if we want to support more key types
-                "crv": "Ed25519",
-                "x": signing_key,
-            },
-        )
-        for index, signing_key in keys_with_indices
-    ]
 
 
 def _build_key_references(
