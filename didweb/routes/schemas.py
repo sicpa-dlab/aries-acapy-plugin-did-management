@@ -30,7 +30,7 @@ class KeyRetentionConfigSchema(OpenAPISchema):
     number_of_keys = fields.Int(required=True)
 
 
-class DIDWebSchema(OpenAPISchema):
+class DIDSchema(OpenAPISchema):
     """ """
 
     did = fields.Str(required=True, **GENERIC_DID)

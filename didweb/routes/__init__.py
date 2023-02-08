@@ -1,4 +1,6 @@
 from aiohttp import web
+
+from .register_route import register_route
 from .get_diddoc import fetch_diddoc
 from .rotate_key import rotate_key
 
@@ -11,6 +13,7 @@ async def register(app: web.Application):
         [
             web.get("/didweb/diddoc", fetch_diddoc),
             web.put("/didweb/rotate", rotate_key),
+            web.put("/routing/register_route", register_route),
         ]
     )
 

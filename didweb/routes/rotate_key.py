@@ -8,11 +8,11 @@ from aries_cloudagent.wallet.base import BaseWallet
 
 from ..didweb_manager import DIDWebManager
 from .openapi_config import OPENAPI_TAG
-from .schemas import DIDDocSchema, DIDWebSchema
+from .schemas import DIDDocSchema, DIDSchema
 
 
 @docs(tags=[OPENAPI_TAG], summary="Rotate keys for specified did:web, return new DIDDoc")
-@querystring_schema(DIDWebSchema())
+@querystring_schema(DIDSchema())
 @response_schema(DIDDocSchema())
 async def rotate_key(request: web.Request):
     did = request.query.get("did")
