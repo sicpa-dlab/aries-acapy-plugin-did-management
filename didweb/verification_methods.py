@@ -1,3 +1,5 @@
+import base64
+
 import base58
 from pydid.verification_method import JsonWebKey2020, Ed25519VerificationKey2018
 
@@ -13,7 +15,7 @@ def json_web_key_2020(did_value: Did, key_index: int, key: bytes) -> JsonWebKey2
             "kty": "OKP",
             # TODO: remove hard-coding if we want to support more key types
             "crv": "Ed25519",
-            "x": key,
+            "x": base64.b64encode(key),
         },
     )
 

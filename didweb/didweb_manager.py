@@ -1,4 +1,3 @@
-import base64
 from dataclasses import dataclass
 from typing import Iterable, Tuple, List, cast, Callable
 
@@ -71,14 +70,14 @@ class DIDWebManager:
         )
 
         # fetch did with current key
-        did_info, signing_key_b64 = await self._get_did_and_signing_key(did)
+        did_info, signing_key = await self._get_did_and_signing_key(did)
         if not did_info:
             raise UnknownDIDException()
 
         # Also retrieve n previous keys and build complete key list
         previous_keys = await self.__recall_strategy.previous_keys(did)
         keys_with_indices = [
-            (await self.__storage_strategy.current_index(did), signing_key_b64)
+            (await self.__storage_strategy.current_index(did), signing_key)
         ]
         keys_with_indices.extend(
             [(previous_key.index, previous_key.key) for previous_key in previous_keys]
@@ -112,8 +111,8 @@ class DIDWebManager:
 
     async def rotate_key(self, did: str):
         # Safe keep the old key
-        did_info, signing_key_b64 = await self._get_did_and_signing_key(did)
-        await self.__storage_strategy.store_old_key(did, signing_key_b64)
+        did_info, signing_key = await self._get_did_and_signing_key(did)
+        await self.__storage_strategy.store_old_key(did, signing_key)
 
         # Rotate key in wallet
         await self.__wallet.rotate_did_keypair_start(did)
@@ -124,9 +123,9 @@ class DIDWebManager:
 
     async def _get_did_and_signing_key(self, did) -> Tuple[DIDInfo, bytes]:
         did_info = await self.__wallet.get_local_did(did.replace("did:sov:", ""))
-        signing_key_b64 = base64.b64encode(base58.b58decode(did_info.verkey))
+        signing_key = base58.b58decode(did_info.verkey)
 
-        return did_info, signing_key_b64
+        return did_info, signing_key
 
     async def _retrieve_routing_information(self) -> Tuple[List[str], str]:
         route_manager = self.__profile.inject(RouteManager)

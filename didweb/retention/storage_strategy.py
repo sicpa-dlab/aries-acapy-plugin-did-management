@@ -1,4 +1,5 @@
 import abc
+import base64
 import logging
 from typing import List
 
@@ -40,13 +41,14 @@ class AskarStorageStrategy(StorageStrategy):
         )
 
         return [
-            PreviousKey(int(key.tags.get("index")), key.value) for key in previous_keys
+            PreviousKey(int(key.tags.get("index")), base64.b64decode(key.value))
+            for key in previous_keys
         ]
 
     async def store_old_key(self, did: str, signing_key: bytes):
         """
         :param did: DID for which the key is being safe-kept
-        :param signing_key: base 64 representation of the DID's signing key
+        :param signing_key: bytes of the DID's signing key
         :return:
         """
         # Store current key
@@ -56,7 +58,7 @@ class AskarStorageStrategy(StorageStrategy):
 
         current_key_record = StorageRecord(
             PREVIOUS_PUBLIC_KEY_RECORD_TYPE,
-            signing_key,
+            base64.b64encode(signing_key),
             {"did": did, "index": str(index)},
             f"{did}#{index}",
         )
