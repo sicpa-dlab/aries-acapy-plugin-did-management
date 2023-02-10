@@ -15,7 +15,7 @@ from aries_cloudagent.wallet.key_type import ED25519
 from pydid import DIDDocumentBuilder, DIDUrl
 from pydid.verification_method import VerificationMethod
 
-from didweb.retention import AskarStorageStrategy, NumberOfKeysStrategy
+from didweb.retention import StorageBackendStorageStrategy, NumberOfKeysStrategy
 from didweb.verification_methods import Did, ed25519_verification_key_2018
 
 
@@ -39,7 +39,7 @@ class DIDWebManager:
         self.__profile = profile
         self.__wallet = wallet
         self.__storage = storage
-        self.__storage_strategy = AskarStorageStrategy(self.__storage)
+        self.__storage_strategy = StorageBackendStorageStrategy(self.__storage)
         self.__recall_strategy = (
             NumberOfKeysStrategy(
                 self.__storage_strategy, recall_strategy_config.number_of_keys

@@ -1,7 +1,9 @@
 import abc
 import logging
 from dataclasses import dataclass
+from typing import List
 
+from . import PreviousKey
 from .storage_strategy import StorageStrategy
 
 logger = logging.getLogger(__name__)
@@ -22,7 +24,7 @@ class NumberOfKeysStrategy(RecallStrategy):
         self.__storage_strategy = storage_strategy
         self.__previous_keys = previous_keys
 
-    async def previous_keys(self, did: str):
+    async def previous_keys(self, did: str) -> List[PreviousKey]:
         all_previous_keys = await self.__storage_strategy.stored_keys(did)
 
         reversed_previous_keys = sorted(
