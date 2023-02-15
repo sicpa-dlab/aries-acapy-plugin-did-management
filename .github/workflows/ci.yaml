@@ -16,14 +16,14 @@ jobs:
         python-version: ["3.9", "3.10"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache python environment
         id: cache-env
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.pythonLocation }}
           key: ${{ runner.os }}-testing-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
@@ -35,7 +35,7 @@ jobs:
         id: setup-poetry-env
         run: |
           poetry env use $(which python)
-          echo "::set-output name=poetry-env::$(poetry env info --path)"
+          echo "poetry-env=$(poetry env info --path)" >> $GITHUB_OUTPUT
       - name: Install dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |
