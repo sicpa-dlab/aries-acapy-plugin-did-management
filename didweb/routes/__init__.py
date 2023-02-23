@@ -1,5 +1,6 @@
 from aiohttp import web
 
+from .mark_did_public import set_public_did
 from .register_route import register_route
 from .get_diddoc import fetch_diddoc
 from .rotate_key import rotate_key
@@ -14,6 +15,7 @@ async def register(app: web.Application):
             web.get("/didweb/diddoc", fetch_diddoc),
             web.put("/didweb/rotate", rotate_key),
             web.put("/routing/register_route", register_route),
+            web.put("/routing/set_public_did", set_public_did),
         ]
     )
 
