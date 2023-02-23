@@ -36,4 +36,4 @@ async def fetch_diddoc(request: web.Request):
 
         diddoc = await manager.get_diddoc(did)
 
-    return web.Response(text=diddoc.to_json())
+    return web.json_response(text=diddoc.to_json())

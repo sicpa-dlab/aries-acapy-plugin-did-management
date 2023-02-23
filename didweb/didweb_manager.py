@@ -95,6 +95,7 @@ class DIDWebManager:
         # reference the keys in the other sections
         all_key_references = _build_key_references(did, keys_with_indices)
         did_doc_builder.authentication.methods.extend(all_key_references)
+        did_doc_builder.assertion_method.methods.extend(all_key_references)
 
         # add routing information
         routing_keys, endpoint = await self._retrieve_routing_information()
