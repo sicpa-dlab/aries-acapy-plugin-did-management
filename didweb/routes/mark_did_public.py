@@ -1,5 +1,5 @@
 from aiohttp import web
-from aiohttp_apispec import docs, querystring_schema
+from aiohttp_apispec import docs, match_info_schema
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.did_posture import DIDPosture
@@ -13,7 +13,7 @@ from didweb.routes.schemas import DIDSchema
     summary="Set public DID of the wallet."
     "This is limited to the wallet, no ledger interaction.",
 )
-@querystring_schema(DIDSchema())
+@match_info_schema(DIDSchema())
 async def set_public_did(request: web.Request):
     did = request.query.get("did")
     if not did:

@@ -37,7 +37,6 @@ class DIDSchema(OpenAPISchema):
 
 
 class GetDIDDocSchema(OpenAPISchema):
-    did = fields.Str(required=True, **GENERIC_DID)
     number_of_keys = fields.Int(required=False)
 
 

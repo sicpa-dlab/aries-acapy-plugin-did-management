@@ -1,5 +1,5 @@
 from aiohttp import web
-from aiohttp_apispec import querystring_schema, response_schema
+from aiohttp_apispec import response_schema, match_info_schema
 from aiohttp_apispec.decorators import docs
 
 from aries_cloudagent.admin.request_context import AdminRequestContext
@@ -11,8 +11,8 @@ from .openapi_config import OPENAPI_TAG
 from .schemas import DIDDocSchema, DIDSchema
 
 
-@docs(tags=[OPENAPI_TAG], summary="Rotate keys for specified did:web, return new DIDDoc")
-@querystring_schema(DIDSchema())
+@docs(tags=[OPENAPI_TAG], summary="Rotate keys for specified did, returns new DIDDoc")
+@match_info_schema(DIDSchema())
 @response_schema(DIDDocSchema())
 async def rotate_key(request: web.Request):
     did = request.query.get("did")

@@ -1,5 +1,5 @@
 from aiohttp import web
-from aiohttp_apispec import querystring_schema
+from aiohttp_apispec import match_info_schema
 from aiohttp_apispec.decorators import docs
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.protocols.coordinate_mediation.v1_0.route_manager import (
@@ -17,7 +17,7 @@ from .schemas import DIDSchema
     summary="Registers a route for a given DID within a multi-tenanted agent.",
     responses={201: {"description": "Route registered."}},
 )
-@querystring_schema(DIDSchema())
+@match_info_schema(DIDSchema())
 async def register_route(request: web.Request):
     did = request.query.get("did")
     if not did:
