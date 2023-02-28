@@ -1,8 +1,9 @@
 from aiohttp import web
-from aiohttp_apispec import docs, match_info_schema
+from aiohttp_apispec import docs, match_info_schema, response_schema
 from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.did_posture import DIDPosture
+from aries_cloudagent.wallet.routes import DIDResultSchema
 
 from .openapi_config import OPENAPI_TAG
 from didweb.routes.schemas import DIDSchema
@@ -14,6 +15,7 @@ from didweb.routes.schemas import DIDSchema
     "This is limited to the wallet, no ledger interaction.",
 )
 @match_info_schema(DIDSchema())
+@response_schema(DIDResultSchema, 200, description="The updated did.")
 async def set_public_did(request: web.Request):
     did = request.query.get("did")
     if not did:
