@@ -15,7 +15,7 @@ from .schemas import DIDDocSchema, DIDSchema
 @match_info_schema(DIDSchema())
 @response_schema(DIDDocSchema())
 async def rotate_key(request: web.Request):
-    did = request.query.get("did")
+    did = request.match_info.get("did")
     if not did:
         raise web.HTTPBadRequest(reason="Request query must include DID")
 

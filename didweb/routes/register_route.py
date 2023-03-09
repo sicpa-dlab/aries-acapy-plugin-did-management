@@ -19,7 +19,7 @@ from .schemas import DIDSchema
 )
 @match_info_schema(DIDSchema())
 async def register_route(request: web.Request):
-    did = request.query.get("did")
+    did = request.match_info.get("did")
     if not did:
         raise web.HTTPBadRequest(reason="Request query must include DID")
 
