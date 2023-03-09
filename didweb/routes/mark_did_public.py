@@ -17,9 +17,6 @@ from didweb.routes.schemas import DIDSchema
 @match_info_schema(DIDSchema())
 @response_schema(DIDResultSchema, 200, description="The updated did.")
 async def set_public_did(request: web.Request):
-    import pdb
-
-    pdb.set_trace()
     did = request.match_info.get("did")
     if not did:
         raise web.HTTPBadRequest(reason="Request query must include DID")
