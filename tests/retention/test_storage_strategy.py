@@ -1,6 +1,6 @@
 import pytest
 
-from didweb.retention import NoStorageStrategy, StorageBackendStorageStrategy, PreviousKey
+from didmanagement.retention import NoStorageStrategy, StorageBackendStorageStrategy, PreviousKey
 
 
 @pytest.mark.asyncio
