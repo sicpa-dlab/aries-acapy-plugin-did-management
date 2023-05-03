@@ -27,8 +27,9 @@ aca-py ....
 
 ```bash
 curl -X 'GET' \
-  'http://localhost:7082/didweb/diddoc?did=did%3Aweb%3Aadaptivespace.io' \
-  -H 'accept: application/json'
+  'http://localhost:3001/wallet/did%3Aweb%3Aadaptivespace.io/diddoc?number_of_keys=1' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ3YWxsZXRfaWQiOiI5ZWI4MzU5Yi05YzAwLTRlNWYtODg5Mi04ZmE1YTYxZWQyZjAiLCJpYXQiOjE2ODMxMTYzMzR9.qVPrNFZrtNiApNu6ByljnuKEJyQ1Yv4K4bAFTeXUYbs'
 ```
 
 results in
@@ -45,13 +46,9 @@ results in
   "verificationMethod": [
     {
       "id": "did:web:adaptivespace.io#key-1",
-      "type": "JsonWebKey2020",
+      "type": "Ed25519VerificationKey2018",
       "controller": "did:web:adaptivespace.io",
-      "publicKeyJwk": {
-        "kty": "OKP",
-        "crv": "Ed25519",
-        "x": "1Q5QR+Y/iFKv42AnAC8sgMlFTrDfyZbFbm7SSBrpaog="
-      }
+      "publicKeyBase58": "BjHQU69pvfDdzM1Dh1CA19dSmK3P9nYP5SKvyQvrsAYq"
     }
   ],
   "authentication": [
@@ -59,19 +56,29 @@ results in
   ],
   "assertionMethod": [
     "did:web:adaptivespace.io#key-1"
+  ],
+  "service": [
+    {
+      "id": "did:web:adaptivespace.io#service-0",
+      "type": "did-communication",
+      "serviceEndpoint": "http://localhost:3000",
+      "recipientKeys": [
+        "did:web:adaptivespace.io#key-1"
+      ],
+      "routingKeys": [],
+      "priority": 0
+    }
   ]
 }
 ```
-
-Notes:
-* service endpoint is not listed yet
-
+    
 
 # Rotate key
 ```bash
 curl -X 'PUT' \
-  'http://localhost:7082/didweb/rotate?did=did%3Aweb%3Aadaptivespace.io' \
-  -H 'accept: application/json'
+  'http://localhost:3001/wallet/did%3Aweb%3Aadaptivespace.io/rotate-keys' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ3YWxsZXRfaWQiOiI5ZWI4MzU5Yi05YzAwLTRlNWYtODg5Mi04ZmE1YTYxZWQyZjAiLCJpYXQiOjE2ODMxMTYzMzR9.qVPrNFZrtNiApNu6ByljnuKEJyQ1Yv4K4bAFTeXUYbs'
 ```
 
 results in the updated DIDDoc:
@@ -88,24 +95,15 @@ results in the updated DIDDoc:
   "verificationMethod": [
     {
       "id": "did:web:adaptivespace.io#key-1",
-      "type": "JsonWebKey2020",
+      "type": "Ed25519VerificationKey2018",
       "controller": "did:web:adaptivespace.io",
-      "publicKeyJwk": {
-        "kty": "OKP",
-        "crv": "Ed25519",
-        "x": "1Q5QR+Y/iFKv42AnAC8sgMlFTrDfyZbFbm7SSBrpaog="
-      }
-    },
-    {
-      "id": "did:web:adaptivespace.io#key-2",
-      "type": "JsonWebKey2020",
-      "controller": "did:web:adaptivespace.io",
-      "publicKeyJwk": {
-        "kty": "OKP",
-        "crv": "Ed25519",
-        "x": "kFSu1+YV7vDD/8GeQ3cpKJi+b5ywocJSbMZepzWXqhE="
-      }
-    }
+      "publicKeyBase58": "BjHQU69pvfDdzM1Dh1CA19dSmK3P9nYP5SKvyQvrsAYq"
+    },{
+		"id": "did:web:adaptivespace.io#key-2",
+		"type": "Ed25519VerificationKey2018",
+		"controller": "did:web:adaptivespace.io",
+		"publicKeyBase58": "D8VqpiMhCr1oXsMiBZPqYx8ND83UruHLcmJysNrSRqxX"
+	}
   ],
   "authentication": [
     "did:web:adaptivespace.io#key-1",
@@ -114,6 +112,49 @@ results in the updated DIDDoc:
   "assertionMethod": [
     "did:web:adaptivespace.io#key-1",
     "did:web:adaptivespace.io#key-2"
+  ],
+  "service": [
+    {
+      "id": "did:web:adaptivespace.io#service-0",
+      "type": "did-communication",
+      "serviceEndpoint": "http://localhost:3000",
+      "recipientKeys": [
+        "did:web:adaptivespace.io#key-2"
+      ],
+      "routingKeys": [],
+      "priority": 0
+    }
   ]
+}
+```
+
+# Register route
+```bash
+curl -X 'PUT' \
+  'http://localhost:3001/wallet/did%3Aweb%3Aadaptivespace.io/routing/register-route' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ3YWxsZXRfaWQiOiI5ZWI4MzU5Yi05YzAwLTRlNWYtODg5Mi04ZmE1YTYxZWQyZjAiLCJpYXQiOjE2ODMxMTYzMzR9.qVPrNFZrtNiApNu6ByljnuKEJyQ1Yv4K4bAFTeXUYbs'
+```
+
+results in HTTP response 201 and empty body which means success.
+
+# Mark public
+
+```bash
+curl -X 'PUT' \
+  'http://localhost:3001/wallet/did%3Aweb%3Aadaptivespace.io/mark-public' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ3YWxsZXRfaWQiOiI5ZWI4MzU5Yi05YzAwLTRlNWYtODg5Mi04ZmE1YTYxZWQyZjAiLCJpYXQiOjE2ODMxMTYzMzR9.qVPrNFZrtNiApNu6ByljnuKEJyQ1Yv4K4bAFTeXUYbs'
+```
+
+results in:
+
+```json
+{
+  "did": "did:web:adaptivespace.io",
+  "verkey": "BjHQU69pvfDdzM1Dh1CA19dSmK3P9nYP5SKvyQvrsAYq",
+  "posture": "posted",
+  "key_type": "ed25519",
+  "method": "web"
 }
 ```
