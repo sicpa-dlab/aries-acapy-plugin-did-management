@@ -31,4 +31,4 @@ async def rotate_key(request: web.Request):
         new_diddoc = await manager.rotate_key(did)
         await transaction.commit()
 
-    return web.Response(text=new_diddoc.to_json())
+    return web.json_response(text=new_diddoc.to_json())
