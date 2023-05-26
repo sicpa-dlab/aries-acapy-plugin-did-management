@@ -2,7 +2,7 @@ from typing import List
 
 import pytest
 
-from didweb.retention import NumberOfKeysStrategy, StorageStrategy, PreviousKey
+from didmanagement.retention import NumberOfKeysStrategy, StorageStrategy, PreviousKey
 
 
 class DummyStorageStrategy(StorageStrategy):

@@ -6,7 +6,7 @@ from aries_cloudagent.wallet.did_posture import DIDPosture
 from aries_cloudagent.wallet.routes import DIDResultSchema
 
 from .openapi_config import OPENAPI_TAG
-from didweb.routes.schemas import DIDSchema
+from didmanagement.routes.schemas import DIDSchema
 
 
 @docs(

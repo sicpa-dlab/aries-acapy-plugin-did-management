@@ -12,8 +12,8 @@ from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.did_info import DIDInfo
 from aries_cloudagent.wallet.key_type import ED25519
 
-from didweb import WEB
-from didweb.didweb_manager import DIDWebManager, RecallStrategyConfig
+from didmanagement import WEB
+from didmanagement.didweb_manager import DIDWebManager, RecallStrategyConfig
 
 
 @pytest.fixture

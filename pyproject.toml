@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Clément Humbert <clement.humbert@sicpa.com>"]
 readme = "README.md"
-packages = [{include = "didweb"}]
+packages = [{include = "didmanagement"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
