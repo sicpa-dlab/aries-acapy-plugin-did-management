@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import itertools
 from typing import Iterable, Tuple, List, cast, Callable
 
 import base58
@@ -86,10 +87,16 @@ class DIDManager:
         # Build diddoc
         did_doc_builder = DIDDocumentBuilder(did, controller=[did])
 
-        verification_methods = [
+        verification_methods_and_contexts = [
             verification_method_factory(did, key_index, key)
             for key_index, key in keys_with_indices
         ]
+        verification_methods, contexts = zip(*verification_methods_and_contexts)
+        # flat map the contexts and eliminate duplicate entries
+        contexts = list(set(itertools.chain.from_iterable(contexts)))
+
+        # add contexts required by the verification methods
+        did_doc_builder.context.extend(contexts)
         did_doc_builder.verification_method.methods.extend(verification_methods)
 
         # reference the keys in the other sections

@@ -129,6 +129,33 @@ async def test_get_diddoc_should_populate_service(
 
 
 @pytest.mark.asyncio
+async def test_get_diddoc_includes_relevant_contexts(
+    a_did, configure_context, dummy_storage
+):
+    # given
+    profile, wallet = configure_context(a_did)
+
+    # when
+    didweb_manager = DIDManager(
+        profile=profile,
+        wallet=wallet,
+        storage=dummy_storage,
+        recall_strategy_config=RecallStrategyConfig(2),
+    )
+
+    diddoc = await didweb_manager.get_diddoc(a_did.did)
+    parsed_json_document = json.loads(diddoc.to_json())
+
+    # then
+    assert len(parsed_json_document["verificationMethod"]) == 1
+    verification_method = parsed_json_document["verificationMethod"][0]
+
+    assert verification_method["type"] == "Ed25519VerificationKey2018"
+    assert "https://w3id.org/security/suites/ed25519-2018/v1" in parsed_json_document["@context"]
+    assert "https://www.w3.org/ns/did/v1" in parsed_json_document["@context"]
+
+
+@pytest.mark.asyncio
 async def test_rotate_key_should_use_underlying_wallet(
     a_did, configure_context, dummy_storage
 ):
