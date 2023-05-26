@@ -5,7 +5,7 @@ from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.storage.base import BaseStorage
 from aries_cloudagent.wallet.base import BaseWallet
 
-from ..didweb_manager import DIDWebManager
+from ..did_manager import DIDManager
 from .openapi_config import OPENAPI_TAG
 from .schemas import GetDIDDocSchema, DIDDocSchema, DIDSchema
 from ..retention import RecallStrategyConfig
@@ -29,7 +29,7 @@ async def fetch_diddoc(request: web.Request):
             RecallStrategyConfig(number_of_keys - 1) if number_of_keys >= 1 else None
         )
 
-        manager = DIDWebManager(
+        manager = DIDManager(
             context.profile,
             session.inject(BaseWallet),
             session.inject(BaseStorage),

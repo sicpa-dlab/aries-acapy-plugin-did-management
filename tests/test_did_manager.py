@@ -10,19 +10,19 @@ from aries_cloudagent.protocols.coordinate_mediation.v1_0.route_manager import (
 )
 from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.did_info import DIDInfo
+from aries_cloudagent.wallet.did_method import SOV
 from aries_cloudagent.wallet.key_type import ED25519
 
-from didweb import WEB
-from didweb.didweb_manager import DIDWebManager, RecallStrategyConfig
+from didmanagement.did_manager import DIDManager, RecallStrategyConfig
 
 
 @pytest.fixture
 def a_did():
     yield DIDInfo(
-        "did:web:perdu.com",
+        "did:sov:HR6vs6GEZ8rHaVgjg2WodM",
         base58.b58encode(b"a verification key").decode(),
         {},
-        WEB,
+        SOV,
         ED25519,
     )
 
@@ -73,7 +73,7 @@ async def test_get_diddoc_should_build_diddoc_with_correct_did_and_keys(
     profile, wallet = configure_context(a_did)
 
     # when
-    didweb_manager = DIDWebManager(
+    didweb_manager = DIDManager(
         profile=profile,
         wallet=wallet,
         storage=dummy_storage,
@@ -107,7 +107,7 @@ async def test_get_diddoc_should_populate_service(
     profile, wallet = configure_context(a_did, "http://configur.ed", expected_endpoint)
 
     # when
-    didweb_manager = DIDWebManager(
+    didweb_manager = DIDManager(
         profile=profile,
         wallet=wallet,
         storage=dummy_storage,
@@ -136,7 +136,7 @@ async def test_rotate_key_should_use_underlying_wallet(
     profile, wallet = configure_context(a_did)
 
     # when
-    didweb_manager = DIDWebManager(
+    didweb_manager = DIDManager(
         profile=profile,
         wallet=wallet,
         storage=dummy_storage,

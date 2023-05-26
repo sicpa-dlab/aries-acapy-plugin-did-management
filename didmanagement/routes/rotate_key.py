@@ -6,7 +6,7 @@ from aries_cloudagent.admin.request_context import AdminRequestContext
 from aries_cloudagent.storage.base import BaseStorage
 from aries_cloudagent.wallet.base import BaseWallet
 
-from ..didweb_manager import DIDWebManager
+from ..did_manager import DIDManager
 from .openapi_config import OPENAPI_TAG
 from .schemas import DIDDocSchema, DIDSchema
 
@@ -22,7 +22,7 @@ async def rotate_key(request: web.Request):
     context: AdminRequestContext = request["context"]
 
     async with context.profile.transaction() as transaction:
-        manager = DIDWebManager(
+        manager = DIDManager(
             context.profile,
             transaction.inject(BaseWallet),
             transaction.inject(BaseStorage),
@@ -31,4 +31,4 @@ async def rotate_key(request: web.Request):
         new_diddoc = await manager.rotate_key(did)
         await transaction.commit()
 
-    return web.Response(text=new_diddoc.to_json())
+    return web.json_response(text=new_diddoc.to_json())

@@ -15,8 +15,8 @@ from aries_cloudagent.wallet.key_type import ED25519
 from pydid import DIDDocumentBuilder, DIDUrl
 from pydid.verification_method import VerificationMethod
 
-from didweb.retention import StorageBackendStorageStrategy, NumberOfKeysStrategy
-from didweb.verification_methods import Did, ed25519_verification_key_2018
+from didmanagement.retention import StorageBackendStorageStrategy, NumberOfKeysStrategy
+from didmanagement.verification_methods import Did, ed25519_verification_key_2018
 
 
 class UnknownDIDException(Exception):
@@ -28,7 +28,7 @@ class RecallStrategyConfig:
     number_of_keys: int = 0
 
 
-class DIDWebManager:
+class DIDManager:
     def __init__(
         self,
         profile: Profile,
