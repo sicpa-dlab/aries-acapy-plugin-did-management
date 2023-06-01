@@ -140,19 +140,22 @@ async def test_get_diddoc_includes_relevant_contexts(
         profile=profile,
         wallet=wallet,
         storage=dummy_storage,
-        recall_strategy_config=RecallStrategyConfig(2),
+        recall_strategy_config=RecallStrategyConfig(5),
     )
 
+    await didweb_manager.rotate_key(a_did.did)
     diddoc = await didweb_manager.get_diddoc(a_did.did)
     parsed_json_document = json.loads(diddoc.to_json())
 
     # then
-    assert len(parsed_json_document["verificationMethod"]) == 1
-    verification_method = parsed_json_document["verificationMethod"][0]
+    assert len(parsed_json_document["verificationMethod"]) == 2
 
-    assert verification_method["type"] == "Ed25519VerificationKey2018"
-    assert "https://w3id.org/security/suites/ed25519-2018/v1" in parsed_json_document["@context"]
-    assert "https://www.w3.org/ns/did/v1" in parsed_json_document["@context"]
+    contexts = parsed_json_document["@context"]
+    assert "https://w3id.org/security/suites/ed25519-2018/v1" in contexts
+    assert "https://www.w3.org/ns/did/v1" in contexts
+
+    # check the contexts for duplicates
+    assert len(set(contexts)) == len(contexts)
 
 
 @pytest.mark.asyncio
@@ -170,8 +173,11 @@ async def test_rotate_key_should_use_underlying_wallet(
         recall_strategy_config=RecallStrategyConfig(2),
     )
 
-    await didweb_manager.rotate_key(a_did.did)
+    diddoc = await didweb_manager.rotate_key(a_did.did)
 
     # then
     wallet.rotate_did_keypair_start.assert_called_once()
     wallet.rotate_did_keypair_apply.assert_called_once()
+
+    contexts = json.loads(diddoc.to_json())["@context"]
+    assert len(set(contexts)) == len(contexts)

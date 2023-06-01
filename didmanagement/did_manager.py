@@ -85,7 +85,7 @@ class DIDManager:
         )
 
         # Build diddoc
-        did_doc_builder = DIDDocumentBuilder(did, controller=[did])
+        did_doc_builder = DIDDocumentBuilder(did, context=_get_default_context(), controller=[did])
 
         verification_methods_and_contexts = [
             verification_method_factory(did, key_index, key)
@@ -116,6 +116,7 @@ class DIDManager:
         )
 
         return did_doc_builder.build()
+
 
     async def rotate_key(self, did: str):
         # Safe keep the old key
@@ -149,3 +150,7 @@ def _build_key_references(
     did: str, keys_with_indices: Iterable[Tuple[int, bytes]]
 ) -> List[DIDUrl]:
     return [DIDUrl(f"{did}#key-{index}") for index, _ in keys_with_indices]
+
+
+def _get_default_context():
+    return [context for context in DIDDocumentBuilder.DEFAULT_CONTEXT]
