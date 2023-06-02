@@ -85,7 +85,7 @@ class DIDManager:
         )
 
         # Build diddoc
-        did_doc_builder = DIDDocumentBuilder(did, context=_get_default_context(), controller=[did])
+        did_doc_builder = DIDDocumentBuilder(did, controller=[did])
 
         verification_methods_and_contexts = [
             verification_method_factory(did, key_index, key)
