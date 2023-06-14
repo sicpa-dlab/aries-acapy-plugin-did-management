@@ -8,7 +8,7 @@ packages = [{include = "didmanagement"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-aries-cloudagent = "^0.8.1"
+aries-cloudagent = "^0.8.2"
 pydid = "^0.3"
 #aries-cloudagent = { git = "https://github.com/sicpa-dlab/aries-cloudagent-python", rev = "e4ab945258f8152f50776c89e06e52375c9102b7"}
 
