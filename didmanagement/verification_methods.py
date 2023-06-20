@@ -3,7 +3,6 @@ import logging
 from typing import List, Tuple, Optional
 
 import base58
-from aries_cloudagent.config.injection_context import InjectionContext
 from aries_cloudagent.core.profile import Profile
 from aries_cloudagent.storage.base import BaseStorage
 from aries_cloudagent.wallet.default_verification_key_strategy import BaseVerificationKeyStrategy
@@ -44,12 +43,9 @@ def ed25519_verification_key_2018(
 
 class DidManagerVerificationKeyStrategy(BaseVerificationKeyStrategy):
     async def get_verification_method_id_for_did(self, did: str,
-                                                 profile: Optional[Profile] = None,
+                                                 profile: Optional[Profile],
                                                  allowed_verification_method_types: Optional[List[KeyType]] = None,
                                                  proof_purpose: Optional[str] = None) -> Optional[str]:
-        if profile is None:
-            logger.error("Unable to access the storage layer as no profile has been provided.")
-            return None
 
         async with profile.session() as session:
             storage = session.inject(BaseStorage)
