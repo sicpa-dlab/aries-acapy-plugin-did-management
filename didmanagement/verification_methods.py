@@ -5,7 +5,9 @@ from typing import List, Tuple, Optional
 import base58
 from aries_cloudagent.core.profile import Profile
 from aries_cloudagent.storage.base import BaseStorage
+from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.default_verification_key_strategy import BaseVerificationKeyStrategy
+from aries_cloudagent.wallet.error import WalletNotFoundError
 from aries_cloudagent.wallet.key_type import KeyType
 from pydid.verification_method import JsonWebKey2020, Ed25519VerificationKey2018
 
@@ -46,12 +48,22 @@ class LatestVerificationKeyStrategy(BaseVerificationKeyStrategy):
                                                  profile: Optional[Profile],
                                                  allowed_verification_method_types: Optional[List[KeyType]] = None,
                                                  proof_purpose: Optional[str] = None) -> Optional[str]:
-
         async with profile.session() as session:
-            storage = session.inject(BaseStorage)
-            storage_strategy = StorageBackendStorageStrategy(storage)
-            curr_idx = await storage_strategy.current_index(did)
-            return _verification_method_id(did, curr_idx)
+            wallet = session.inject(BaseWallet)
+            try:
+                # Check is DID is known
+                await wallet.get_local_did(did.replace("did:sov:", ""))
+
+                # DID is known, get current keys count and derive key ID
+                storage = session.inject(BaseStorage)
+                storage_strategy = StorageBackendStorageStrategy(storage)
+                curr_idx = await storage_strategy.current_index(did)
+
+                return _verification_method_id(did, curr_idx)
+            except WalletNotFoundError:
+                # DID is unknown
+                return None
+
 
 
 def _verification_method_id(did_value: Did, key_index: int) -> str:
