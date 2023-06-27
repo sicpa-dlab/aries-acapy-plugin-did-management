@@ -1,9 +1,10 @@
 import json
-from typing import Tuple
+from typing import Tuple, Type, Mapping
 from unittest.mock import AsyncMock, MagicMock
 
 import base58
 import pytest
+from aries_cloudagent.config.base import InjectType
 from aries_cloudagent.core.profile import Profile, ProfileSession
 from aries_cloudagent.protocols.coordinate_mediation.v1_0.route_manager import (
     RouteManager,
@@ -24,7 +25,11 @@ class MockSession(ProfileSession):
         super().__init__(profile)
         self.__storage = storage
 
-    def inject(self, **kwargs):
+    def inject(
+            self,
+            base_cls: Type[InjectType],
+            settings: Mapping[str, object] = None,
+    ) -> InjectType:
         return self.__storage
 
 
