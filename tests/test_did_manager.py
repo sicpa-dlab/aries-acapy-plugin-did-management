@@ -14,7 +14,7 @@ from aries_cloudagent.wallet.did_info import DIDInfo
 from aries_cloudagent.wallet.did_method import SOV
 from aries_cloudagent.wallet.key_type import ED25519
 
-from didmanagement import DidManagerVerificationKeyStrategy
+from didmanagement import LatestVerificationKeyStrategy
 from didmanagement.did_manager import DIDManager, RecallStrategyConfig
 from tests.conftest import DummyStorage
 
@@ -209,7 +209,7 @@ async def test_rotate_key_should_update_current_verkey_id(
         a_did, configure_context, dummy_storage
 ):
     profile, wallet = configure_context(a_did, dummy_storage)
-    verkey_strat = DidManagerVerificationKeyStrategy()
+    verkey_strat = LatestVerificationKeyStrategy()
 
     didweb_manager = DIDManager(
         profile=profile,

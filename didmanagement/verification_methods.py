@@ -41,7 +41,7 @@ def ed25519_verification_key_2018(
     ), ["https://w3id.org/security/suites/ed25519-2018/v1"]
 
 
-class DidManagerVerificationKeyStrategy(BaseVerificationKeyStrategy):
+class LatestVerificationKeyStrategy(BaseVerificationKeyStrategy):
     async def get_verification_method_id_for_did(self, did: str,
                                                  profile: Optional[Profile],
                                                  allowed_verification_method_types: Optional[List[KeyType]] = None,
