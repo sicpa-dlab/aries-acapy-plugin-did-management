@@ -11,6 +11,7 @@ from aries_cloudagent.protocols.coordinate_mediation.v1_0.route_manager import (
 from aries_cloudagent.storage.base import BaseStorage
 from aries_cloudagent.wallet.base import BaseWallet
 from aries_cloudagent.wallet.did_info import DIDInfo
+from aries_cloudagent.wallet.error import WalletNotFoundError
 from aries_cloudagent.wallet.key_type import ED25519
 
 from pydid import DIDDocumentBuilder, DIDUrl
@@ -72,8 +73,6 @@ class DIDManager:
 
         # fetch did with current key
         did_info, signing_key = await self._get_did_and_signing_key(did)
-        if not did_info:
-            raise UnknownDIDException()
 
         # Also retrieve n previous keys and build complete key list
         previous_keys = await self.__recall_strategy.previous_keys(did)
@@ -131,10 +130,13 @@ class DIDManager:
         return await self.get_diddoc(did)
 
     async def _get_did_and_signing_key(self, did) -> Tuple[DIDInfo, bytes]:
-        did_info = await self.__wallet.get_local_did(did.replace("did:sov:", ""))
-        signing_key = base58.b58decode(did_info.verkey)
+        try:
+            did_info = await self.__wallet.get_local_did(did.replace("did:sov:", ""))
+            signing_key = base58.b58decode(did_info.verkey)
 
-        return did_info, signing_key
+            return did_info, signing_key
+        except WalletNotFoundError:
+            raise UnknownDIDException()
 
     async def _retrieve_routing_information(self) -> Tuple[List[str], str]:
         route_manager = self.__profile.inject(RouteManager)
