@@ -1,4 +1,15 @@
-# ACA-Python DID Web plugin
+# ACA-Python DID Management plugin
+
+This plugin can be split in two categories functionalities:
+* A couple of endpoints to manage public DIDs out of aca-py currently Sovrin-specific endpoints:
+  * mark a DID as public
+  * Setup routing for a DID in multi-tenancy scenarios
+* A couple of endpoints to put together DID documents backed by ACA-Py-managed keys
+  * an endpoint to rotate key while retaining knowledge of the public key
+  * an endpoint to retrieve the DID document, optionally including rotated out keys
+
+Note that the key rotation retention use case was born out of a very specific business use case and is not really
+intended or recommended for general use. The endpoint to retrieve a did document is still usable without this feature.
 
 ## Developing
 
@@ -23,6 +34,7 @@ and run aca-py from the poetry environment:
 poetry env
 aca-py ....
 ```
+
 # Fetching the DIDDoc
 
 ```bash
