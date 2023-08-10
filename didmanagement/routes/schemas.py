@@ -1,9 +1,10 @@
 import re
 
-from aries_cloudagent.messaging.models.openapi import OpenAPISchema
-from aries_cloudagent.messaging.valid import GENERIC_DID
 from marshmallow import fields, INCLUDE, Schema
 from marshmallow.validate import Regexp
+
+from aries_cloudagent.messaging.models.openapi import OpenAPISchema
+from aries_cloudagent.messaging.valid import GENERIC_DID_VALIDATE
 
 
 class WebDID(Regexp):
@@ -33,7 +34,7 @@ class KeyRetentionConfigSchema(OpenAPISchema):
 class DIDSchema(OpenAPISchema):
     """ """
 
-    did = fields.Str(required=True, **GENERIC_DID)
+    did = fields.Str(required=True, validate=GENERIC_DID_VALIDATE)
 
 
 class GetDIDDocSchema(OpenAPISchema):
@@ -43,7 +44,7 @@ class GetDIDDocSchema(OpenAPISchema):
 class DIDQueryStringSchema(OpenAPISchema):
     """Parameters and validators for set public DID request query string."""
 
-    did = fields.Str(description="DID of interest", required=True, **GENERIC_DID)
+    did = fields.Str(description="DID of interest", required=True, validate=GENERIC_DID_VALIDATE)
 
 
 class DIDDocSchema(Schema):
