@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 import itertools
 from typing import Iterable, Tuple, List, cast, Callable
@@ -111,11 +112,12 @@ class DIDManager:
             routing_keys=[
                 DIDKey.from_public_key_b58(key, key_type=ED25519).did
                 for key in routing_keys
-            ],
+            ]
+            if routing_keys is not None
+            else [],
         )
 
         return did_doc_builder.build()
-
 
     async def rotate_key(self, did: str):
         # Safe keep the old key
@@ -140,12 +142,14 @@ class DIDManager:
 
     async def _retrieve_routing_information(self) -> Tuple[List[str], str]:
         route_manager = self.__profile.inject(RouteManager)
+
         routing_keys, my_endpoint = await route_manager.routing_info(
             self.__profile,
-            cast(str, self.__profile.settings.get("default_endpoint")),
             None,
         )
-        return routing_keys, my_endpoint
+        return routing_keys, my_endpoint or cast(
+            str, self.__profile.settings.get("default_endpoint")
+        )
 
 
 def _build_key_references(
